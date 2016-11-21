@@ -1,4 +1,4 @@
-# cicd-deploy-consul
+# create_consul_cluster_ansible
 ##deploy consul cluster
 
 This simple playbook sets up a consul cluster based on consul docker image. Playbook deploys the consul docker containers in server mode and web ui in client mode. These docker containers use the docker host network for communication. Consul cluster can be accessed externall with the http://<web ui external IP>:8500 or via curl. 
