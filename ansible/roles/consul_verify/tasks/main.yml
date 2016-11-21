@@ -1,0 +1,13 @@
+---
+- name: UI Client Eth0 IP
+  shell: ip -4 a show dev bond0 | grep inet | awk '{print $2}' | awk  -F'[/=]' '{print $1}'
+  delegate_to: "{{ ui_client_name }}"
+  register: client_ip_out
+ 
+- name: Verify if consul cluster is formed and up
+  shell: sleep 30; curl {{ client_ip_out.stdout }}:8500/v1/catalog/nodes
+  register: docker_ps_out
+  
+- debug: var=docker_ps_out.stdout
+
+

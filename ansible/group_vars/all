@@ -1,0 +1,4 @@
+---
+master_name: server1.example.com
+ui_client_name: server4.example.com
+cluster_size: 3

@@ -1,0 +1,31 @@
+---
+# Playbook needs an inventory file when run against real servers.
+# For local testing with vagrant use hosts: all
+# ansible-playbook create-consul-cluster.yml -i inventory.yml -u root -k
+# Needs to add master and web ui client FQDN/IP and the size of the cluster in to group_vars/all
+# Playbook delete all consul master, member servers and web ui client
+
+- hosts: consul_master
+  remote_user: root
+  become: yes
+  become_method: sudo
+  tasks:
+   - name: delete consul master docker containers
+     shell: docker stop consul; sleep 5; docker rm consul
+     register: delete_consul_master
+     ignore_errors: yes
+
+   - debug: var=delete_consul_master.stdout
+
+- hosts: consul_slaves, consul_client
+  remote_user: root
+  become: yes
+  become_method: sudo
+  tasks:
+   - name: delete consul member and web ui docker containers
+     shell: docker stop consul; sleep 5; docker rm consul
+     register: delete_consul_slaves
+     ignore_errors: yes
+
+   - debug: var=delete_consul_slaves.stdout
+

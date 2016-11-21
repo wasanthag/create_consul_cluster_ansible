@@ -1,0 +1,35 @@
+---
+# Playbook needs an inventory file when run against real servers.
+# For local testing with vagrant use hosts: all
+# ansible-playbook create-consul-cluster.yml -i inventory.yml -u root -k
+# Needs to add master and web ui client FQDN/IP and the size of the cluster in to group_vars/all
+# Playbook creates and boot strap consul master, create member servers, web up client and join cluster
+
+- hosts: consul_master
+  remote_user: root
+  become: yes
+  become_method: sudo
+  roles:
+    - consul_master
+
+- hosts: consul_slaves
+  remote_user: root
+  become: yes
+  become_method: sudo
+  roles:
+    - consul_slaves
+
+- hosts: consul_client
+  remote_user: root
+  become: yes
+  become_method: sudo
+  roles:
+    - consul_client
+
+- hosts: consul_master
+  remote_user: root
+  become: yes
+  become_method: sudo
+  roles:
+    - consul_verify
+

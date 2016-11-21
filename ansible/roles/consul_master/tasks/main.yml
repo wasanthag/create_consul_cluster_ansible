@@ -1,0 +1,22 @@
+---
+- name: Gather master Eth0 IP
+  debug: msg="{{ ansible_eth0 .ipv4.address}}"
+ 
+- set_fact: master_ip="{{ ansible_eth0 .ipv4.address}}"
+- debug: var=master_ip
+
+- template: src=master.j2 dest=/opt/master.sh mode=0655
+
+- name: install consul docker containers
+  shell: /opt/master.sh
+  register: install_consul_master
+
+- debug: var=install_consul_master.stdout
+
+- name: Verify if consul docker containers are up
+  shell: docker ps | grep consul
+  register: docker_ps_out
+  
+- debug: var=docker_ps_out.stdout
+
+

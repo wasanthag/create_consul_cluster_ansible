@@ -1,0 +1,10 @@
+---
+[consul_master]
+server1.example.com
+
+[consul_slaves]
+server2.example.com
+server3.example.com
+
+[consul_client]
+server4.example.com

@@ -1,0 +1,11 @@
+#!/bin/bash
+export PRIVATE_IP=`ip -4 a show dev eth0 | grep inet | awk '{print $2}' | awk  -F'[/=]' '{print $1}'`
+export BRIDGE_IP=`ip -4 a show dev docker0 | grep inet | awk '{print $2}' | awk  -F'[/=]' '{print $1}'`
+export CLUSTER_SIZE={{ cluster_size }}
+
+docker run -d --name consul --net=host  \
+    -p $PRIVATE_IP:8300:8300 -p $PRIVATE_IP:8301:8301 -p $PRIVATE_IP:8301:8301/udp \
+    -p $PRIVATE_IP:8302:8302 -p $PRIVATE_IP:8302:8302/udp -p $PRIVATE_IP:8400:8400 \
+    -p $PRIVATE_IP:8500:8500 -p $BRIDGE_IP:53:53/udp \
+    consul agent -server -advertise=$PRIVATE_IP -bind=$PRIVATE_IP -bootstrap-expect=$CLUSTER_SIZE -retry-join={{ master_ip.stdout }}
+ 

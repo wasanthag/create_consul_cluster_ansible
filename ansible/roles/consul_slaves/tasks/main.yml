@@ -1,0 +1,22 @@
+---
+- name: Get master IP
+  shell: ip -4 a show dev eth0 | grep inet | awk '{print $2}' | awk  -F'[/=]' '{print $1}'
+  delegate_to: "{{ master_name }}"
+  register: master_ip
+
+- debug: msg=master_ip.stdout
+
+- name: Check reachability to Master Eth0 IP
+  shell: ping -c 2 "{{ master_ip.stdout }}"
+  register: ping_out
+
+- debug: var=ping_out.stdout
+
+- template: src=slave.j2 dest=/opt/slave.sh mode=0655
+
+- name: install consul member docker containers
+  shell: /opt/slave.sh
+  register: install_consul_slave
+
+- debug: var=install_consul_slave.stdout
+
